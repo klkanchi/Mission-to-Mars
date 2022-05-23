@@ -12,17 +12,20 @@ def scrape_all():
     # Initiate headless driver for deployment
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=True)
-
     news_title, news_paragraph = mars_news(browser)
-
+    hemisphere_image_urls = hemisphere(browser)
     # Run all scraping functions and store results in a dictionary
     data = {
         "news_title": news_title,
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
+        "hemispheres": hemisphere_image_urls,
         "last_modified": dt.datetime.now()
+
     }
+
+
 
     # Stop webdriver and return data
     browser.quit()
@@ -80,8 +83,8 @@ def featured_image(browser):
         return None
 
     # Use the base url to create an absolute url
-    img_url = f'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/{img_url_rel}'
-
+    #img_url = f'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/{img_url_rel}'
+    img_url = 'https://spaceimages-mars.com/' + img_url_rel
     return img_url
 
 def mars_facts():
@@ -99,6 +102,31 @@ def mars_facts():
 
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
+
+
+def hemisphere(browser):
+    url='https://marshemispheres.com/'
+    browser.visit(url)
+
+
+    hemisphere_image_urls = []
+
+    imgs_links= browser.find_by_css("a.product-item h3")
+    for i in range(4):
+    #create empty dictionary
+        hemispheres = {}
+        browser.find_by_css('a.product-item h3')[i].click()
+        element = browser.find_link_by_text('Sample').first
+        img_url = element['href']
+        title = browser.find_by_css("h2.title").text
+        hemispheres["img_url"] = img_url
+        hemispheres["title"] = title
+        hemisphere_image_urls.append(hemispheres)
+        browser.back()
+    
+    print(hemisphere_image_urls)
+    return hemisphere_image_urls
+
 
 if __name__ == "__main__":
 

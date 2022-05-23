@@ -38,6 +38,7 @@
           <h2>Featured Mars Image</h2>
 
           <!-- if images is False/None/non-existent, then default to error message -->
+          <!--<h3>{{mars.featured_image}}</h3> -->
           <img
             src="{{mars.featured_image | default('static/images/error.png', true) }}"
             class="img-responsive"
@@ -49,7 +50,9 @@
           <!-- Mars Facts -->
           <div class="row" id="mars-facts">
             <h4>Mars Facts</h4>
+            <table class="table table-stripped">
             {{ mars.facts | safe }}
+          </table>
           </div>
         </div>
       </div>
@@ -61,9 +64,11 @@
         </div>
 
         {% for hemisphere in mars.hemispheres %}
-        <div class="col-md-6">
+        <div class="col-md-3">
           <div class="thumbnail">
-            <img src="{{hemisphere.img_url | default('static/images/error.png', true)}}" alt="...">
+            <!--<h3>{{hemisphere.img_url }}</h3>-->
+            <img src="{{hemisphere.img_url | default('static/images/error.png', true)}}"
+            class="img-responsive" alt="responsive image">
             <div class="caption">
               <h3>{{hemisphere.title}}</h3>
             </div>
